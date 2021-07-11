@@ -1,0 +1,78 @@
+FROM debian:experimental
+
+LABEL comment="Debian experimental vnc environment" \
+      maintainer="Antony Pavlov <antonynpavlov@gmail.com>"
+
+# Add default user
+ENV BUILDUSER builduser
+#ENV WORKDIR /home/$BUILDUSER
+
+#ENV BUILDUSER root
+ENV WORKDIR /root
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN \
+	printf "deb http://deb.debian.org/debian experimental main contrib non-free" > /etc/apt/sources.list.d/experimental.list \
+	&& printf "deb http://deb.debian.org/debian unstable main contrib non-free" > /etc/apt/sources.list \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		xorg \
+		tightvncserver \
+		autocutsel \
+		fvwm \
+		vim \
+		aptitude \
+		sudo \
+	&& apt-get install -y git git-annex \
+	&& apt-get install -y locales \
+	&& apt-get install -y kicad/experimental \
+	&& apt-get install -y swi-prolog \
+	&& apt-get install -y python3-pip python3-yaml python3-magic python3-rdflib pelican \
+	&& pip3 install nanoid \
+	&& pip3 install kifield sexpdata \
+	&& apt-get install -y zip unzip xdg-utils poppler-utils \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& useradd -ms /bin/bash $BUILDUSER \
+	&& adduser $BUILDUSER sudo \
+	&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/sudo-nopasswd
+
+# https://stackoverflow.com/questions/28405902/how-to-set-the-locale-inside-a-debian-ubuntu-docker-container
+# Set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+EXPOSE 5901
+
+#FIXME
+ENV USER root
+
+# Copy the startup script and run it
+ADD vnc-startup.sh /
+RUN chmod +x /vnc-startup.sh
+
+#USER $BUILDUSER
+
+#WORKDIR $WORKDIR
+
+ADD gitconfig $WORKDIR/.gitconfig
+
+# Disable the screen saver
+ADD .xscreensaver $WORKDIR/
+
+# Enable the vnc clipboard
+RUN mkdir -p $WORKDIR/.vnc/
+ADD xstartup $WORKDIR/.vnc/xstartup
+
+#USER root
+RUN chmod +x $WORKDIR/.vnc/xstartup
+#USER $BUILDUSER
+
+# Launch the command and run
+CMD ["/bin/bash", "/vnc-startup.sh", "--no-exit"]
+
+#ENTRYPOINT [ "/bin/bash" ]

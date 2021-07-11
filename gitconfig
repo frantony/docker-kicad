@@ -1,0 +1,13 @@
+[core]
+        editor = vim
+        quotepath = off
+        # use this on windows only!
+        #autocrlf = true
+
+[gc]
+        auto = 0
+
+[i18n]
+        encoding = utf8
+        commitencoding = utf8
+        logoutputencoding = utf8
