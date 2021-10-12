@@ -32,6 +32,10 @@ else
     tightvncserver
 fi
 
+if [ -x /usr/sbin/sshd ]; then
+    /usr/sbin/sshd
+fi
+
 # launch a user shell
 if [ "$NOEXIT" = true ] ; then
   /bin/bash

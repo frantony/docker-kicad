@@ -32,11 +32,17 @@ RUN \
 	&& pip3 install nanoid \
 	&& pip3 install kifield sexpdata \
 	&& apt-get install -y zip unzip xdg-utils poppler-utils \
+	&& apt-get install -y openssh-server \
+	&& sed -i "s/^#X11UseLocalhost yes/X11UseLocalhost no/" /etc/ssh/sshd_config \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& useradd -ms /bin/bash $BUILDUSER \
 	&& adduser $BUILDUSER sudo \
+	&& echo "$BUILDUSER:builduserpasswd" | chpasswd \
 	&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/sudo-nopasswd
+
+
+RUN service ssh start
 
 # https://stackoverflow.com/questions/28405902/how-to-set-the-locale-inside-a-debian-ubuntu-docker-container
 # Set the locale
@@ -46,6 +52,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+EXPOSE 22
 EXPOSE 5901
 
 #FIXME
