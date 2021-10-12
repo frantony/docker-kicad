@@ -13,6 +13,7 @@ chmod 600 authorized_keys
 BU=/home/builduser
 docker run --rm -p 5901:5901 -p 5022:22 \
     -v $(pwd)/authorized_keys:${BU}/.ssh/authorized_keys \
+    -v $(pwd)/config-kicad:${BU}/.config/kicad \
     -v PATH_TO_KICAD_PROJECT:/project \
     -it $IMAGE
 
