@@ -1,2 +1,4 @@
 authorized_keys
 config-kicad/
+kicad6-prepare.sh
+kicad6-stuff/

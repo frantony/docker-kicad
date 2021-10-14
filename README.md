@@ -10,10 +10,14 @@ docker build -t $IMAGE -f Dockerfile.debian-exp .
 
 cp ~/.ssh/id_rsa.pub authorized_keys
 chmod 600 authorized_keys
+./kicad6-prepare.sh
+
 BU=/home/builduser
 docker run --rm -p 5901:5901 -p 5022:22 \
     -v $(pwd)/authorized_keys:${BU}/.ssh/authorized_keys \
     -v $(pwd)/config-kicad:${BU}/.config/kicad \
+    -v $(pwd)/kicad6-stuff/kicad-symbols:/usr/share/kicad/library/ \
+    -v $(pwd)/kicad6-stuff/kicad-footprints:/usr/share/kicad/modules/ \
     -v PATH_TO_KICAD_PROJECT:/project \
     -it $IMAGE
 
