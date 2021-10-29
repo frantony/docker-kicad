@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 KICAD6STUFF=kicad6-stuff
 CONFIGKICAD6=config-kicad/6.0
 
