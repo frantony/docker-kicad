@@ -31,6 +31,7 @@ RUN \
 	&& apt-get install -y python3-pip python3-yaml python3-magic python3-rdflib pelican \
 	&& pip3 install nanoid \
 	&& pip3 install kifield sexpdata \
+	&& pip3 install si_prefix \
 	&& apt-get install -y zip unzip xdg-utils poppler-utils \
 	&& apt-get install -y openssh-server \
 	&& sed -i "s/^#X11UseLocalhost yes/X11UseLocalhost no/" /etc/ssh/sshd_config \
